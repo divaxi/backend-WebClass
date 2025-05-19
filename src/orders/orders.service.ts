@@ -23,7 +23,7 @@ export class OrdersService {
 
     // Dependencies here
     private readonly orderRepository: OrderRepository,
-  ) {}
+  ) { }
 
   async create(createOrderDto: CreateOrderDto) {
     // Do not remove comment below.
