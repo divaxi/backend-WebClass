@@ -26,14 +26,11 @@ import { CustomersModule } from './customers/customers.module';
 
 import { OrdersModule } from './orders/orders.module';
 
-import { OrderItemsModule } from './order-items/order-items.module';
-
 import { OrderHistoriesModule } from './order-histories/order-histories.module';
 
 @Module({
   imports: [
     OrderHistoriesModule,
-    OrderItemsModule,
     OrdersModule,
     CustomersModule,
     ConfigModule.forRoot({

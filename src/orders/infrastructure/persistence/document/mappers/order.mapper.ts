@@ -1,16 +1,12 @@
 import { Order } from '../../../../domain/order';
-import { OrderItemMapper } from '../../../../../order-items/infrastructure/persistence/document/mappers/order-item.mapper';
 
 import { OrderSchemaClass } from '../entities/order.schema';
 
 export class OrderMapper {
   public static toDomain(raw: OrderSchemaClass): Order {
     const domainEntity = new Order();
-    if (raw.item) {
-      domainEntity.item = raw.item.map((item) =>
-        OrderItemMapper.toDomain(item),
-      );
-    }
+
+    domainEntity.item = raw.item;
 
     domainEntity.totalAmount = raw.totalAmount;
 
@@ -35,11 +31,8 @@ export class OrderMapper {
 
   public static toPersistence(domainEntity: Order): OrderSchemaClass {
     const persistenceSchema = new OrderSchemaClass();
-    if (domainEntity.item) {
-      persistenceSchema.item = domainEntity.item.map((item) =>
-        OrderItemMapper.toPersistence(item),
-      );
-    }
+
+    persistenceSchema.item = domainEntity.item;
 
     persistenceSchema.totalAmount = domainEntity.totalAmount;
 

@@ -1,13 +1,6 @@
-import { OrderItemsService } from '../order-items/order-items.service';
-import { OrderItem } from '../order-items/domain/order-item';
-
 import {
   // common
   Injectable,
-  HttpStatus,
-  UnprocessableEntityException,
-  Inject,
-  forwardRef,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -18,33 +11,13 @@ import { Order } from './domain/order';
 @Injectable()
 export class OrdersService {
   constructor(
-    @Inject(forwardRef(() => OrderItemsService))
-    private readonly orderItemService: OrderItemsService,
-
     // Dependencies here
     private readonly orderRepository: OrderRepository,
-  ) { }
+  ) {}
 
   async create(createOrderDto: CreateOrderDto) {
-    // Do not remove comment below.
-    // <creating-property />
-    const itemObjects = await this.orderItemService.findByIds(
-      createOrderDto.item.map((entity) => entity.id),
-    );
-    if (itemObjects.length !== createOrderDto.item.length) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          item: 'notExists',
-        },
-      });
-    }
-    const item = itemObjects;
-
     return this.orderRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
-      item,
+      item: createOrderDto.item,
 
       totalAmount: createOrderDto.totalAmount,
 
@@ -90,27 +63,11 @@ export class OrdersService {
   ) {
     // Do not remove comment below.
     // <updating-property />
-    let item: OrderItem[] | undefined = undefined;
-
-    if (updateOrderDto.item) {
-      const itemObjects = await this.orderItemService.findByIds(
-        updateOrderDto.item.map((entity) => entity.id),
-      );
-      if (itemObjects.length !== updateOrderDto.item.length) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            item: 'notExists',
-          },
-        });
-      }
-      item = itemObjects;
-    }
 
     return this.orderRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
-      item,
+      item: updateOrderDto.item,
 
       totalAmount: updateOrderDto.totalAmount,
 

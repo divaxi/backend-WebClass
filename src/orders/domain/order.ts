@@ -1,5 +1,5 @@
-import { OrderItem } from '../../order-items/domain/order-item';
 import { ApiProperty } from '@nestjs/swagger';
+import { OrderItem } from '../../order-item/domain/order-item';
 
 export class Order {
   @ApiProperty({

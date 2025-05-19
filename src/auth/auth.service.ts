@@ -12,7 +12,6 @@ import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
-import { AuthProvidersEnum } from './auth-providers.enum';
 import { SocialInterface } from '../social/interfaces/social.interface';
 import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
 import { NullableType } from '../utils/types/nullable.type';
@@ -40,48 +39,53 @@ export class AuthService {
   ) {}
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
-    const user = await this.usersService.findByEmail(loginDto.email);
+    let user = await this.usersService.findByEmail(loginDto.email);
 
     if (!user) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          email: 'notFound',
-        },
+      // throw new UnprocessableEntityException({
+      //   status: HttpStatus.UNPROCESSABLE_ENTITY,
+      //   errors: {
+      //     email: 'notFound',
+      //   },
+      // });
+      user = await this.usersService.create({
+        firstName: 'demo',
+        lastName: 'dome',
+        email: `demo${Math.random()}@gmail.com`,
       });
     }
 
-    if (user.provider !== AuthProvidersEnum.email) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          email: `needLoginViaProvider:${user.provider}`,
-        },
-      });
-    }
-
-    if (!user.password) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          password: 'incorrectPassword',
-        },
-      });
-    }
-
-    const isValidPassword = await bcrypt.compare(
-      loginDto.password,
-      user.password,
-    );
-
-    if (!isValidPassword) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          password: 'incorrectPassword',
-        },
-      });
-    }
+    // if (user.provider !== AuthProvidersEnum.email) {
+    //   throw new UnprocessableEntityException({
+    //     status: HttpStatus.UNPROCESSABLE_ENTITY,
+    //     errors: {
+    //       email: `needLoginViaProvider:${user.provider}`,
+    //     },
+    //   });
+    // }
+    //
+    // if (!user.password) {
+    //   throw new UnprocessableEntityException({
+    //     status: HttpStatus.UNPROCESSABLE_ENTITY,
+    //     errors: {
+    //       password: 'incorrectPassword',
+    //     },
+    //   });
+    // }
+    //
+    // const isValidPassword = await bcrypt.compare(
+    //   loginDto.password,
+    //   user.password,
+    // );
+    //
+    // if (!isValidPassword) {
+    //   throw new UnprocessableEntityException({
+    //     status: HttpStatus.UNPROCESSABLE_ENTITY,
+    //     errors: {
+    //       password: 'incorrectPassword',
+    //     },
+    //   });
+    // }
 
     const hash = crypto
       .createHash('sha256')

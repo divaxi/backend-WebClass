@@ -1,5 +1,3 @@
-import { OrderItemDto } from '../../order-items/dto/order-item.dto';
-
 import {
   // decorators here
 
@@ -18,16 +16,17 @@ import {
   // decorators here
   Type,
 } from 'class-transformer';
+import { OrderItem } from '../../order-item/domain/order-item';
 
 export class CreateOrderDto {
   @ApiProperty({
     required: true,
-    type: () => [OrderItemDto],
+    type: () => [OrderItem],
   })
   @ValidateNested()
-  @Type(() => OrderItemDto)
+  @Type(() => OrderItem)
   @IsArray()
-  item: OrderItemDto[];
+  item: OrderItem[];
 
   @ApiProperty({
     required: true,
