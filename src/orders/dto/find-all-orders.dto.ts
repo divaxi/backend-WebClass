@@ -36,4 +36,8 @@ export class SearchDto {
   status?: string;
 
   customer?: string;
+
+  startDate?: Date;
+
+  endDate?: Date;
 }

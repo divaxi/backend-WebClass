@@ -8,6 +8,13 @@ import { Order } from '../../../../domain/order';
 import { OrderMapper } from '../mappers/order.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { SearchDto } from '../../../../dto/find-all-orders.dto';
+import {
+  DayByDay,
+  MonthByMonth,
+  TotalResponseDto,
+  YearByYear,
+} from '../../../../../satistic/dto/satistic.dto';
+import { EnumerateResponseDto } from '../../../../../satistic/dto/satistic.dto';
 
 @Injectable()
 export class OrderDocumentRepository implements OrderRepository {
@@ -63,6 +70,163 @@ export class OrderDocumentRepository implements OrderRepository {
     return entityObjects.map((entityObject) =>
       OrderMapper.toDomain(entityObject),
     );
+  }
+
+  async countDayByDay(
+    searchQuery: Omit<SearchDto, 'code'>,
+  ): Promise<EnumerateResponseDto<DayByDay>> {
+    const { startDate, endDate, status } = searchQuery;
+    const query: Record<string, any> = {};
+
+    query.orderDate = {};
+    if (startDate)
+      query.orderDate.$gte =
+        startDate instanceof Date ? startDate : new Date(startDate);
+    if (endDate)
+      query.orderDate.$lte =
+        endDate instanceof Date ? endDate : new Date(endDate);
+    if (status) query.status = status;
+
+    const entityObjects = await this.orderModel.aggregate([
+      { $match: query },
+      {
+        $group: {
+          _id: { $dayOfYear: '$orderDate' },
+          count: { $sum: 1 },
+          revenue: { $sum: '$totalAmount' },
+        },
+      },
+      { $project: { _id: 0, day: '$_id', count: 1, revenue: 1 } },
+    ]);
+
+    return {
+      total: entityObjects.length,
+      data: entityObjects.map((entityObject) => ({
+        day: entityObject._id,
+        count: entityObject.count,
+        revenue: entityObject.revenue,
+      })),
+    };
+  }
+
+  async countMonthByMonth(
+    searchQuery: Omit<SearchDto, 'code'>,
+  ): Promise<EnumerateResponseDto<MonthByMonth>> {
+    const { startDate, endDate, status } = searchQuery;
+    const query: Record<string, any> = {};
+
+    query.orderDate = {};
+    if (startDate)
+      query.orderDate.$gte =
+        startDate instanceof Date ? startDate : new Date(startDate);
+    if (endDate)
+      query.orderDate.$lte =
+        endDate instanceof Date ? endDate : new Date(endDate);
+    if (status) query.status = status;
+
+    const entityObjects = await this.orderModel.aggregate([
+      { $match: query },
+      {
+        $group: {
+          _id: { $month: '$orderDate' },
+          count: { $sum: 1 },
+          revenue: { $sum: '$totalAmount' },
+        },
+      },
+      { $project: { _id: 0, month: '$_id', count: 1, revenue: 1 } },
+    ]);
+
+    return {
+      total: entityObjects.length,
+      data: entityObjects.map((entityObject) => ({
+        month: entityObject._id,
+        count: entityObject.count,
+        revenue: entityObject.revenue,
+      })),
+    };
+  }
+
+  async countYearByYear(
+    searchQuery: Omit<SearchDto, 'code'>,
+  ): Promise<EnumerateResponseDto<YearByYear>> {
+    const { startDate, endDate, status } = searchQuery;
+    const query: Record<string, any> = {};
+
+    query.orderDate = {};
+    if (startDate)
+      query.orderDate.$gte =
+        startDate instanceof Date ? startDate : new Date(startDate);
+    if (endDate)
+      query.orderDate.$lte =
+        endDate instanceof Date ? endDate : new Date(endDate);
+    if (status) query.status = status;
+
+    const entityObjects = await this.orderModel.aggregate([
+      { $match: query },
+      {
+        $group: {
+          _id: { $year: '$orderDate' },
+          count: { $sum: 1 },
+          revenue: { $sum: '$totalAmount' },
+        },
+      },
+      { $project: { _id: 0, year: '$_id', count: 1, revenue: 1 } },
+    ]);
+
+    return {
+      total: entityObjects.length,
+      data: entityObjects.map((entityObject) => ({
+        year: entityObject._id,
+        count: entityObject.count,
+        revenue: entityObject.revenue,
+      })),
+    };
+  }
+
+  async countTotalByQuery(
+    searchQuery: Omit<SearchDto, 'code'>,
+  ): Promise<TotalResponseDto> {
+    const { startDate, endDate, status } = searchQuery;
+    const query: Record<string, any> = {};
+
+    query.orderDate = {};
+    if (startDate)
+      query.orderDate.$gte =
+        startDate instanceof Date ? startDate : new Date(startDate);
+    if (endDate)
+      query.orderDate.$lte =
+        endDate instanceof Date ? endDate : new Date(endDate);
+    if (status) query.status = status;
+
+    const entityObjects = await this.orderModel.find(query);
+
+    return {
+      total: entityObjects.length,
+    };
+  }
+
+  async revenueTotalByQuery(
+    searchQuery: Omit<SearchDto, 'code'>,
+  ): Promise<TotalResponseDto> {
+    const { startDate, endDate, status } = searchQuery;
+    const query: Record<string, any> = {};
+
+    query.orderDate = {};
+    if (startDate)
+      query.orderDate.$gte =
+        startDate instanceof Date ? startDate : new Date(startDate);
+    if (endDate)
+      query.orderDate.$lte =
+        endDate instanceof Date ? endDate : new Date(endDate);
+    if (status) query.status = status;
+    const entityObjects = await this.orderModel.find(query);
+
+    return {
+      total: entityObjects.reduce(
+        (acc, entityObject) => acc + entityObject.totalAmount,
+        0,
+      ),
+    };
   }
 
   async update(

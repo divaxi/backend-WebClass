@@ -81,6 +81,26 @@ export class OrdersService {
     return this.orderRepository.findByIds(ids);
   }
 
+  countDayByDay(query: Omit<SearchDto, 'code'>) {
+    return this.orderRepository.countDayByDay(query);
+  }
+
+  countMonthByMonth(query: Omit<SearchDto, 'code'>) {
+    return this.orderRepository.countMonthByMonth(query);
+  }
+
+  countYearByYear(query: Omit<SearchDto, 'code'>) {
+    return this.orderRepository.countYearByYear(query);
+  }
+
+  countTotalByQuery(query: Omit<SearchDto, 'code'>) {
+    return this.orderRepository.countTotalByQuery(query);
+  }
+
+  revenueTotalByQuery(query: Omit<SearchDto, 'code'>) {
+    return this.orderRepository.revenueTotalByQuery(query);
+  }
+
   async update(
     id: Order['id'],
 

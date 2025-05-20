@@ -27,7 +27,7 @@ import { CustomersModule } from './customers/customers.module';
 import { OrdersModule } from './orders/orders.module';
 
 import { OrderHistoriesModule } from './order-histories/order-histories.module';
-
+import { SatisticModule } from './satistic/satistic.module';
 @Module({
   imports: [
     OrderHistoriesModule,
@@ -69,6 +69,7 @@ import { OrderHistoriesModule } from './order-histories/order-histories.module';
     MailModule,
     MailerModule,
     HomeModule,
+    SatisticModule,
   ],
 })
 export class AppModule {}
