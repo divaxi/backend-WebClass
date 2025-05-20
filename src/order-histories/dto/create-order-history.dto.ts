@@ -5,7 +5,6 @@ import { OrderDto } from '../../orders/dto/order.dto';
 import {
   // decorators here
 
-  IsString,
   ValidateNested,
   IsNotEmptyObject,
 } from 'class-validator';
@@ -19,6 +18,7 @@ import {
   // decorators here
   Type,
 } from 'class-transformer';
+import { OrderStatusEnum } from '../../orders/statuses.enum';
 
 export class CreateOrderHistoryDto {
   @ApiProperty({
@@ -40,11 +40,11 @@ export class CreateOrderHistoryDto {
   order: OrderDto;
 
   @ApiProperty({
+    enum: OrderStatusEnum,
+    enumName: 'OrderStatusEnum',
     required: true,
-    type: () => String,
+    description: 'Trạng thái đơn hàng trong lịch sử thay đổi',
+    example: OrderStatusEnum.NEW_PENDING,
   })
-  @IsString()
-  status: string;
-
-  // Don't forget to use the class-validator decorators in the DTO properties.
+  status: OrderStatusEnum;
 }

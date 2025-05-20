@@ -7,6 +7,7 @@ import { OrderRepository } from '../../order.repository';
 import { Order } from '../../../../domain/order';
 import { OrderMapper } from '../mappers/order.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { SearchDto } from '../../../../dto/find-all-orders.dto';
 
 @Injectable()
 export class OrderDocumentRepository implements OrderRepository {
@@ -25,18 +26,33 @@ export class OrderDocumentRepository implements OrderRepository {
   async findAllWithPagination({
     paginationOptions,
   }: {
-    paginationOptions: IPaginationOptions;
+    paginationOptions: IPaginationOptions<SearchDto>;
   }): Promise<Order[]> {
+    const { page, limit, search } = paginationOptions;
+
+    const query: Record<string, any> = {};
+
+    if (search?.code) {
+      query.orderCode = { $regex: search.code, $options: 'i' };
+    }
+
+    if (search?.status) {
+      query.status = search.status;
+    }
+
+    if (search?.customer) {
+      query['customer.name'] = { $regex: search.customer, $options: 'i' };
+    }
+
     const entityObjects = await this.orderModel
-      .find()
-      .skip((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit);
+      .find(query)
+      .skip((page - 1) * limit)
+      .limit(limit);
 
     return entityObjects.map((entityObject) =>
       OrderMapper.toDomain(entityObject),
     );
   }
-
   async findById(id: Order['id']): Promise<NullableType<Order>> {
     const entityObject = await this.orderModel.findById(id);
     return entityObject ? OrderMapper.toDomain(entityObject) : null;

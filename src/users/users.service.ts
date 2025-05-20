@@ -9,14 +9,12 @@ import { FilterUserDto, SortUserDto } from './dto/query-user.dto';
 import { UserRepository } from './infrastructure/persistence/user.repository';
 import { User } from './domain/user';
 import bcrypt from 'bcryptjs';
-import { AuthProvidersEnum } from '../auth/auth-providers.enum';
 import { FilesService } from '../files/files.service';
 import { RoleEnum } from '../roles/roles.enum';
 import { StatusEnum } from '../statuses/statuses.enum';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { FileType } from '../files/domain/file';
 import { Role } from '../roles/domain/role';
-import { Status } from '../statuses/domain/status';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -93,8 +91,6 @@ export class UsersService {
       };
     }
 
-    let status: Status | undefined = undefined;
-
     if (createUserDto.status?.id) {
       const statusObject = Object.values(StatusEnum)
         .map(String)
@@ -107,10 +103,6 @@ export class UsersService {
           },
         });
       }
-
-      status = {
-        id: createUserDto.status.id,
-      };
     }
 
     return this.usersRepository.create({
@@ -122,9 +114,6 @@ export class UsersService {
       password: password,
       photo: photo,
       role: role,
-      status: status,
-      provider: createUserDto.provider ?? AuthProvidersEnum.email,
-      socialId: createUserDto.socialId,
     });
   }
 
@@ -154,19 +143,6 @@ export class UsersService {
 
   findByEmail(email: User['email']): Promise<NullableType<User>> {
     return this.usersRepository.findByEmail(email);
-  }
-
-  findBySocialIdAndProvider({
-    socialId,
-    provider,
-  }: {
-    socialId: User['socialId'];
-    provider: User['provider'];
-  }): Promise<NullableType<User>> {
-    return this.usersRepository.findBySocialIdAndProvider({
-      socialId,
-      provider,
-    });
   }
 
   async update(
@@ -247,8 +223,6 @@ export class UsersService {
       };
     }
 
-    let status: Status | undefined = undefined;
-
     if (updateUserDto.status?.id) {
       const statusObject = Object.values(StatusEnum)
         .map(String)
@@ -261,10 +235,6 @@ export class UsersService {
           },
         });
       }
-
-      status = {
-        id: updateUserDto.status.id,
-      };
     }
 
     return this.usersRepository.update(id, {
@@ -276,9 +246,6 @@ export class UsersService {
       password,
       photo,
       role,
-      status,
-      provider: updateUserDto.provider,
-      socialId: updateUserDto.socialId,
     });
   }
 

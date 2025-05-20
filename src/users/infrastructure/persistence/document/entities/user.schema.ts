@@ -1,10 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, HydratedDocument } from 'mongoose';
 
-import { AuthProvidersEnum } from '../../../../../auth/auth-providers.enum';
 import { FileSchemaClass } from '../../../../../files/infrastructure/persistence/document/entities/file.schema';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
-import { StatusSchema } from '../../../../../statuses/infrastructure/persistence/document/entities/status.schema';
 import { RoleSchema } from '../../../../../roles/infrastructure/persistence/document/entities/role.schema';
 
 export type UserSchemaDocument = HydratedDocument<UserSchemaClass>;
@@ -27,17 +25,6 @@ export class UserSchemaClass extends EntityDocumentHelper {
   password?: string;
 
   @Prop({
-    default: AuthProvidersEnum.email,
-  })
-  provider: string;
-
-  @Prop({
-    type: String,
-    default: null,
-  })
-  socialId?: string | null;
-
-  @Prop({
     type: String,
   })
   firstName: string | null;
@@ -56,11 +43,6 @@ export class UserSchemaClass extends EntityDocumentHelper {
     type: RoleSchema,
   })
   role?: RoleSchema | null;
-
-  @Prop({
-    type: StatusSchema,
-  })
-  status?: StatusSchema;
 
   @Prop({ default: now })
   createdAt: Date;

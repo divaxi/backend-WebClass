@@ -7,6 +7,7 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CustomerRepository } from './infrastructure/persistence/customer.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Customer } from './domain/customer';
+import { SearchDto } from './dto/find-all-customers.dto';
 
 @Injectable()
 export class CustomersService {
@@ -37,7 +38,7 @@ export class CustomersService {
   findAllWithPagination({
     paginationOptions,
   }: {
-    paginationOptions: IPaginationOptions;
+    paginationOptions: IPaginationOptions<SearchDto>;
   }) {
     return this.customerRepository.findAllWithPagination({
       paginationOptions: {

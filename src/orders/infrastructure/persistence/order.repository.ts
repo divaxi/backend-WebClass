@@ -2,6 +2,7 @@ import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { Order } from '../../domain/order';
+import { SearchDto } from '../../dto/find-all-orders.dto';
 
 export abstract class OrderRepository {
   abstract create(
@@ -11,7 +12,7 @@ export abstract class OrderRepository {
   abstract findAllWithPagination({
     paginationOptions,
   }: {
-    paginationOptions: IPaginationOptions;
+    paginationOptions: IPaginationOptions<SearchDto>;
   }): Promise<Order[]>;
 
   abstract findById(id: Order['id']): Promise<NullableType<Order>>;

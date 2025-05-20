@@ -3,15 +3,12 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   Query,
 } from '@nestjs/common';
 import { OrderHistoriesService } from './order-histories.service';
 import { CreateOrderHistoryDto } from './dto/create-order-history.dto';
-import { UpdateOrderHistoryDto } from './dto/update-order-history.dto';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -81,31 +78,5 @@ export class OrderHistoriesController {
   })
   findById(@Param('id') id: string) {
     return this.orderHistoriesService.findById(id);
-  }
-
-  @Patch(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: OrderHistory,
-  })
-  update(
-    @Param('id') id: string,
-    @Body() updateOrderHistoryDto: UpdateOrderHistoryDto,
-  ) {
-    return this.orderHistoriesService.update(id, updateOrderHistoryDto);
-  }
-
-  @Delete(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
-  remove(@Param('id') id: string) {
-    return this.orderHistoriesService.remove(id);
   }
 }

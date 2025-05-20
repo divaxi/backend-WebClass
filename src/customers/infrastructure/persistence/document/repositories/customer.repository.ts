@@ -7,6 +7,7 @@ import { CustomerRepository } from '../../customer.repository';
 import { Customer } from '../../../../domain/customer';
 import { CustomerMapper } from '../mappers/customer.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { SearchDto } from '../../../../dto/find-all-customers.dto';
 
 @Injectable()
 export class CustomerDocumentRepository implements CustomerRepository {
@@ -25,12 +26,28 @@ export class CustomerDocumentRepository implements CustomerRepository {
   async findAllWithPagination({
     paginationOptions,
   }: {
-    paginationOptions: IPaginationOptions;
+    paginationOptions: IPaginationOptions<SearchDto>;
   }): Promise<Customer[]> {
+    const { page, limit, search } = paginationOptions;
+
+    const query: Record<string, any> = {};
+
+    if (search?.phone) {
+      query.phone = { $regex: search.phone, $options: 'i' };
+    }
+
+    if (search?.name) {
+      query.name = { $regex: search.name, $options: 'i' };
+    }
+
+    if (search?.address) {
+      query.address = { $regex: search.address, $options: 'i' };
+    }
+
     const entityObjects = await this.customerModel
-      .find()
-      .skip((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit);
+      .find(query)
+      .skip((page - 1) * limit)
+      .limit(limit);
 
     return entityObjects.map((entityObject) =>
       CustomerMapper.toDomain(entityObject),

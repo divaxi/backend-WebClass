@@ -20,6 +20,7 @@ import {
   Type,
 } from 'class-transformer';
 import { OrderItem } from '../../order-item/domain/order-item';
+import { OrderStatusEnum } from '../statuses.enum';
 
 export class CreateOrderDto {
   @ApiProperty({
@@ -47,7 +48,7 @@ export class CreateOrderDto {
   @IsNumber()
   totalAmount: number;
 
-  status?: string;
+  status?: OrderStatusEnum;
 
   deliveredDate?: Date | null;
 

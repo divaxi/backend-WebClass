@@ -27,12 +27,7 @@ export class UserSeedService {
         password: password,
         firstName: 'Super',
         lastName: 'Admin',
-        role: {
-          _id: RoleEnum.admin.toString(),
-        },
-        status: {
-          _id: StatusEnum.active.toString(),
-        },
+        role: RoleEnum.Admin,
       });
       await data.save();
     }
@@ -51,7 +46,79 @@ export class UserSeedService {
         firstName: 'John',
         lastName: 'Doe',
         role: {
-          _id: RoleEnum.user.toString(),
+          _id: RoleEnum.Staff.toString(),
+        },
+        status: {
+          _id: StatusEnum.active.toString(),
+        },
+      });
+
+      await data.save();
+    }
+
+    const staff = await this.model.findOne({
+      email: 'staff@example.com',
+    });
+
+    if (!staff) {
+      const salt = await bcrypt.genSalt();
+      const password = await bcrypt.hash('secret', salt);
+
+      const data = new this.model({
+        email: 'staff@example.com',
+        password: password,
+        firstName: 'Mr',
+        lastName: 'Staff',
+        role: {
+          _id: RoleEnum.Staff.toString(),
+        },
+        status: {
+          _id: StatusEnum.active.toString(),
+        },
+      });
+
+      await data.save();
+    }
+
+    const manager = await this.model.findOne({
+      email: 'manager@example.com',
+    });
+
+    if (!manager) {
+      const salt = await bcrypt.genSalt();
+      const password = await bcrypt.hash('secret', salt);
+
+      const data = new this.model({
+        email: 'manager@example.com',
+        password: password,
+        firstName: 'Mr',
+        lastName: 'Manager',
+        role: {
+          _id: RoleEnum.Manager.toString(),
+        },
+        status: {
+          _id: StatusEnum.active.toString(),
+        },
+      });
+
+      await data.save();
+    }
+
+    const shipper = await this.model.findOne({
+      email: 'shipper@example.com',
+    });
+
+    if (!shipper) {
+      const salt = await bcrypt.genSalt();
+      const password = await bcrypt.hash('secret', salt);
+
+      const data = new this.model({
+        email: 'shipper@example.com',
+        password: password,
+        firstName: 'Mr',
+        lastName: 'Shipper',
+        role: {
+          _id: RoleEnum.Shipper.toString(),
         },
         status: {
           _id: StatusEnum.active.toString(),

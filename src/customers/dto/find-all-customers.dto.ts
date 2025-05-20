@@ -18,5 +18,21 @@ export class FindAllCustomersDto {
   @ApiPropertyOptional()
   @IsString()
   @IsOptional()
-  search?: string;
+  name?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  address?: string;
+}
+
+export interface SearchDto {
+  name?: string;
+  phone?: string;
+  address?: string;
 }

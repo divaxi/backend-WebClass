@@ -54,7 +54,6 @@ export class CustomersController {
     @Query() query: FindAllCustomersDto,
   ): Promise<InfinityPaginationResponseDto<Customer>> {
     const page = query?.page ?? 1;
-    const search = query.search;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
       limit = 50;
@@ -65,10 +64,9 @@ export class CustomersController {
         paginationOptions: {
           page,
           limit,
-          search,
         },
       }),
-      { page, limit, search },
+      { page, limit },
     );
   }
 

@@ -18,5 +18,22 @@ export class FindAllOrdersDto {
   @ApiPropertyOptional()
   @IsString()
   @IsOptional()
-  search?: string;
+  code?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  status?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  customer?: string;
+}
+export class SearchDto {
+  code?: string;
+
+  status?: string;
+
+  customer?: string;
 }

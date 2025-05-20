@@ -10,6 +10,10 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderRepository } from './infrastructure/persistence/order.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Order } from './domain/order';
+import { SearchDto } from './dto/find-all-orders.dto';
+import { randomBytes } from 'crypto';
+import { addDays } from 'date-fns';
+import { OrderStatusEnum } from './statuses.enum';
 
 export class OrdersService {
   constructor(
@@ -31,6 +35,9 @@ export class OrdersService {
         },
       });
     }
+
+    const orderCode = randomBytes(5).toString('hex');
+    const expectedDeliveryDate = addDays(new Date(), 5);
     return this.orderRepository.create({
       customer: customerObject,
 
@@ -38,24 +45,24 @@ export class OrdersService {
 
       totalAmount: createOrderDto.totalAmount,
 
-      status: createOrderDto.status,
+      status: OrderStatusEnum.NEW_PENDING,
 
       deliveredDate: createOrderDto.deliveredDate,
 
-      expectedDeliveryDate: createOrderDto.expectedDeliveryDate,
+      expectedDeliveryDate,
 
       orderDate: createOrderDto.orderDate,
 
       deliveryAddress: createOrderDto.deliveryAddress,
 
-      orderCode: createOrderDto.orderCode,
+      orderCode,
     });
   }
 
   findAllWithPagination({
     paginationOptions,
   }: {
-    paginationOptions: IPaginationOptions;
+    paginationOptions: IPaginationOptions<SearchDto>;
   }) {
     return this.orderRepository.findAllWithPagination({
       paginationOptions: {

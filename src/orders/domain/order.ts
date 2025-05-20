@@ -1,6 +1,7 @@
 import { Customer } from '../../customers/domain/customer';
 import { ApiProperty } from '@nestjs/swagger';
 import { OrderItem } from '../../order-item/domain/order-item';
+import { OrderStatusEnum } from '../statuses.enum';
 
 export class Order {
   @ApiProperty({
@@ -22,10 +23,13 @@ export class Order {
   totalAmount: number;
 
   @ApiProperty({
-    type: () => String,
+    enum: OrderStatusEnum,
+    enumName: 'OrderStatusEnum',
     nullable: false,
+    description: 'Trạng thái đơn hàng trong lịch sử thay đổi',
+    example: OrderStatusEnum.NEW_PENDING,
   })
-  status?: string;
+  status: OrderStatusEnum;
 
   @ApiProperty({
     type: () => Date,

@@ -6,6 +6,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
 import { OrderItem } from '../../../../../order-item/domain/order-item';
+import { OrderStatusEnum } from '../../../../statuses.enum';
 
 export type OrderSchemaDocument = HydratedDocument<OrderSchemaClass>;
 
@@ -36,8 +37,9 @@ export class OrderSchemaClass extends EntityDocumentHelper {
 
   @Prop({
     type: String,
+    enum: Object.values(OrderStatusEnum),
   })
-  status?: string;
+  status: OrderStatusEnum;
 
   @Prop({
     type: Date,

@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
@@ -11,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -54,7 +52,9 @@ export class OrdersController {
     @Query() query: FindAllOrdersDto,
   ): Promise<InfinityPaginationResponseDto<Order>> {
     const page = query?.page ?? 1;
-    const search = query?.search;
+    const code = query?.code;
+    const status = query?.status;
+    const customer = query?.customer;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
       limit = 50;
@@ -65,10 +65,14 @@ export class OrdersController {
         paginationOptions: {
           page,
           limit,
-          search,
+          search: {
+            code,
+            status,
+            customer,
+          },
         },
       }),
-      { page, limit, search },
+      { page, limit },
     );
   }
 
@@ -83,19 +87,6 @@ export class OrdersController {
   })
   findById(@Param('id') id: string) {
     return this.ordersService.findById(id);
-  }
-
-  @Patch(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: Order,
-  })
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(id, updateOrderDto);
   }
 
   @Delete(':id')
