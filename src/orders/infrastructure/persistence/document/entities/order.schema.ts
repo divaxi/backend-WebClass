@@ -1,3 +1,7 @@
+import { CustomerSchemaClass } from '../../../../../customers/infrastructure/persistence/document/entities/customer.schema';
+
+import mongoose from 'mongoose';
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
@@ -13,6 +17,13 @@ export type OrderSchemaDocument = HydratedDocument<OrderSchemaClass>;
   },
 })
 export class OrderSchemaClass extends EntityDocumentHelper {
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'CustomerSchemaClass',
+    autopopulate: true,
+  })
+  customer: CustomerSchemaClass;
+
   @Prop({
     type: [OrderItem],
   })

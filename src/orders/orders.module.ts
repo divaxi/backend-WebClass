@@ -1,3 +1,4 @@
+import { CustomersModule } from '../customers/customers.module';
 import {
   // do not remove this comment
   Module,
@@ -8,6 +9,8 @@ import { DocumentOrderPersistenceModule } from './infrastructure/persistence/doc
 
 @Module({
   imports: [
+    CustomersModule,
+
     // do not remove this comment
     DocumentOrderPersistenceModule,
   ],

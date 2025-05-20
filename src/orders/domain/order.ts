@@ -1,7 +1,14 @@
+import { Customer } from '../../customers/domain/customer';
 import { ApiProperty } from '@nestjs/swagger';
 import { OrderItem } from '../../order-item/domain/order-item';
 
 export class Order {
+  @ApiProperty({
+    type: () => Customer,
+    nullable: false,
+  })
+  customer: Customer;
+
   @ApiProperty({
     type: () => [OrderItem],
     nullable: false,

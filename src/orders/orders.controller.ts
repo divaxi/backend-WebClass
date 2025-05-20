@@ -54,6 +54,7 @@ export class OrdersController {
     @Query() query: FindAllOrdersDto,
   ): Promise<InfinityPaginationResponseDto<Order>> {
     const page = query?.page ?? 1;
+    const search = query?.search;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
       limit = 50;
@@ -64,9 +65,10 @@ export class OrdersController {
         paginationOptions: {
           page,
           limit,
+          search,
         },
       }),
-      { page, limit },
+      { page, limit, search },
     );
   }
 

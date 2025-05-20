@@ -1,10 +1,14 @@
 import { Order } from '../../../../domain/order';
+import { CustomerMapper } from '../../../../../customers/infrastructure/persistence/document/mappers/customer.mapper';
 
 import { OrderSchemaClass } from '../entities/order.schema';
 
 export class OrderMapper {
   public static toDomain(raw: OrderSchemaClass): Order {
     const domainEntity = new Order();
+    if (raw.customer) {
+      domainEntity.customer = CustomerMapper.toDomain(raw.customer);
+    }
 
     domainEntity.item = raw.item;
 
@@ -31,6 +35,11 @@ export class OrderMapper {
 
   public static toPersistence(domainEntity: Order): OrderSchemaClass {
     const persistenceSchema = new OrderSchemaClass();
+    if (domainEntity.customer) {
+      persistenceSchema.customer = CustomerMapper.toPersistence(
+        domainEntity.customer,
+      );
+    }
 
     persistenceSchema.item = domainEntity.item;
 

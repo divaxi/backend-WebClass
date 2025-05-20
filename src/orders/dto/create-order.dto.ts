@@ -1,3 +1,5 @@
+import { CustomerDto } from '../../customers/dto/customer.dto';
+
 import {
   // decorators here
 
@@ -5,6 +7,7 @@ import {
   IsNumber,
   IsArray,
   ValidateNested,
+  IsNotEmptyObject,
 } from 'class-validator';
 
 import {
@@ -19,6 +22,15 @@ import {
 import { OrderItem } from '../../order-item/domain/order-item';
 
 export class CreateOrderDto {
+  @ApiProperty({
+    required: true,
+    type: () => CustomerDto,
+  })
+  @ValidateNested()
+  @Type(() => CustomerDto)
+  @IsNotEmptyObject()
+  customer: CustomerDto;
+
   @ApiProperty({
     required: true,
     type: () => [OrderItem],

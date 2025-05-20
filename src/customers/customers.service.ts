@@ -43,6 +43,7 @@ export class CustomersService {
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,
+        search: paginationOptions.search,
       },
     });
   }

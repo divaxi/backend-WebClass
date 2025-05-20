@@ -1,6 +1,9 @@
+import { CustomersService } from '../customers/customers.service';
+import { Customer } from '../customers/domain/customer';
 import {
   // common
-  Injectable,
+  HttpStatus,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -8,15 +11,29 @@ import { OrderRepository } from './infrastructure/persistence/order.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Order } from './domain/order';
 
-@Injectable()
 export class OrdersService {
   constructor(
+    private readonly customerService: CustomersService,
+
     // Dependencies here
     private readonly orderRepository: OrderRepository,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
+    const customerObject = await this.customerService.findById(
+      createOrderDto.customer.id,
+    );
+    if (!customerObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          customer: 'notExists',
+        },
+      });
+    }
     return this.orderRepository.create({
+      customer: customerObject,
+
       item: createOrderDto.item,
 
       totalAmount: createOrderDto.totalAmount,
@@ -44,6 +61,7 @@ export class OrdersService {
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,
+        search: paginationOptions.search,
       },
     });
   }
@@ -63,10 +81,28 @@ export class OrdersService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let customer: Customer | undefined = undefined;
+
+    if (updateOrderDto.customer) {
+      const customerObject = await this.customerService.findById(
+        updateOrderDto.customer.id,
+      );
+      if (!customerObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            customer: 'notExists',
+          },
+        });
+      }
+      customer = customerObject;
+    }
 
     return this.orderRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      customer,
+
       item: updateOrderDto.item,
 
       totalAmount: updateOrderDto.totalAmount,
