@@ -64,6 +64,11 @@ export class CustomersController {
         paginationOptions: {
           page,
           limit,
+          search: {
+            name: query.name,
+            address: query.address,
+            phone: query.phone,
+          },
         },
       }),
       { page, limit },

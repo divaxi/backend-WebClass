@@ -47,6 +47,29 @@ export class AuthService {
       });
     }
 
+    if (!user.password) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          password: 'incorrectPassword',
+        },
+      });
+    }
+
+    const isValidPassword = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+
+    if (!isValidPassword) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          password: 'incorrectPassword',
+        },
+      });
+    }
+
     const hash = crypto
       .createHash('sha256')
       .update(randomStringGenerator())

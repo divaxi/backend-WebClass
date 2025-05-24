@@ -4,6 +4,7 @@ import {
   // common
   HttpStatus,
   UnprocessableEntityException,
+  Injectable,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -15,6 +16,7 @@ import { randomBytes } from 'crypto';
 import { addDays } from 'date-fns';
 import { OrderStatusEnum } from './statuses.enum';
 
+@Injectable()
 export class OrdersService {
   constructor(
     private readonly customerService: CustomersService,

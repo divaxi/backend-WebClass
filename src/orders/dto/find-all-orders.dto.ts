@@ -31,13 +31,13 @@ export class FindAllOrdersDto {
   customer?: string;
 }
 export class SearchDto {
-  code?: string;
+  code?: string | undefined;
 
-  status?: string;
+  status?: string | undefined;
 
-  customer?: string;
+  customer?: string | undefined;
 
-  startDate?: Date;
+  startDate?: Date | undefined;
 
-  endDate?: Date;
+  endDate?: Date | undefined;
 }

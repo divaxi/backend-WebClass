@@ -37,24 +37,44 @@ export class OrderDocumentRepository implements OrderRepository {
   }): Promise<Order[]> {
     const { page, limit, search } = paginationOptions;
 
-    const query: Record<string, any> = {};
+    const matchStage: Record<string, any> = {};
 
     if (search?.code) {
-      query.orderCode = { $regex: search.code, $options: 'i' };
+      matchStage.orderCode = { $regex: search.code, $options: 'i' };
     }
 
     if (search?.status) {
-      query.status = search.status;
+      matchStage.status = search.status;
     }
 
     if (search?.customer) {
-      query['customer.name'] = { $regex: search.customer, $options: 'i' };
+      matchStage['customer.name'] = { $regex: search.customer, $options: 'i' };
     }
 
-    const entityObjects = await this.orderModel
-      .find(query)
-      .skip((page - 1) * limit)
-      .limit(limit);
+    const pipeline = [
+      {
+        $lookup: {
+          from: 'customerschemaclasses', // tên collection trong MongoDB
+          localField: 'customer',
+          foreignField: '_id',
+          as: 'customer',
+        },
+      },
+      {
+        $unwind: '$customer',
+      },
+      {
+        $match: matchStage,
+      },
+      {
+        $skip: (page - 1) * limit,
+      },
+      {
+        $limit: limit,
+      },
+    ];
+
+    const entityObjects = await this.orderModel.aggregate(pipeline);
 
     return entityObjects.map((entityObject) =>
       OrderMapper.toDomain(entityObject),
