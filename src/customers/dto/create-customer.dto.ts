@@ -30,9 +30,8 @@ export class CreateCustomerDto {
     required: false,
     type: () => String,
   })
-  @IsOptional()
   @IsString()
-  email?: string | null;
+  email: string;
 
   @ApiProperty({
     required: true,
