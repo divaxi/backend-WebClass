@@ -11,6 +11,7 @@ import { CreateOrderHistoryDto } from './dto/create-order-history.dto';
 import { OrderHistoryRepository } from './infrastructure/persistence/order-history.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { OrderHistory } from './domain/order-history';
+import { SearchDto } from './dto/find-all-order-histories.dto';
 
 @Injectable()
 export class OrderHistoriesService {
@@ -19,13 +20,10 @@ export class OrderHistoriesService {
 
     private readonly orderService: OrdersService,
 
-    // Dependencies here
     private readonly orderHistoryRepository: OrderHistoryRepository,
   ) {}
 
   async create(createOrderHistoryDto: CreateOrderHistoryDto) {
-    // Do not remove comment below.
-    // <creating-property />
     const changeByUserObject = await this.userService.findById(
       createOrderHistoryDto.changeByUser.id,
     );
@@ -54,8 +52,6 @@ export class OrderHistoriesService {
     const order = orderObject;
 
     return this.orderHistoryRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
       changeByUser,
 
       order,
@@ -67,12 +63,13 @@ export class OrderHistoriesService {
   findAllWithPagination({
     paginationOptions,
   }: {
-    paginationOptions: IPaginationOptions;
+    paginationOptions: IPaginationOptions<SearchDto>;
   }) {
     return this.orderHistoryRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,
+        search: paginationOptions.search,
       },
     });
   }

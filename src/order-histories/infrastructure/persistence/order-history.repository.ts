@@ -2,7 +2,7 @@ import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { OrderHistory } from '../../domain/order-history';
-
+import { SearchDto } from '../../dto/find-all-order-histories.dto';
 export abstract class OrderHistoryRepository {
   abstract create(
     data: Omit<OrderHistory, 'id' | 'createdAt' | 'updatedAt'>,
@@ -11,7 +11,7 @@ export abstract class OrderHistoryRepository {
   abstract findAllWithPagination({
     paginationOptions,
   }: {
-    paginationOptions: IPaginationOptions;
+    paginationOptions: IPaginationOptions<SearchDto>;
   }): Promise<OrderHistory[]>;
 
   abstract findById(

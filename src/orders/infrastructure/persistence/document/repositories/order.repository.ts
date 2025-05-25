@@ -98,12 +98,12 @@ export class OrderDocumentRepository implements OrderRepository {
     const { startDate, endDate, status } = searchQuery;
     const query: Record<string, any> = {};
 
-    query.orderDate = {};
+    query.createdAt = {};
     if (startDate)
-      query.orderDate.$gte =
+      query.createdAt.$gte =
         startDate instanceof Date ? startDate : new Date(startDate);
     if (endDate)
-      query.orderDate.$lte =
+      query.createdAt.$lte =
         endDate instanceof Date ? endDate : new Date(endDate);
     if (status) query.status = status;
 
@@ -111,7 +111,7 @@ export class OrderDocumentRepository implements OrderRepository {
       { $match: query },
       {
         $group: {
-          _id: { $dayOfYear: '$orderDate' },
+          _id: { $dayOfYear: '$createdAt' },
           count: { $sum: 1 },
           revenue: { $sum: '$totalAmount' },
         },
@@ -122,7 +122,7 @@ export class OrderDocumentRepository implements OrderRepository {
     return {
       total: entityObjects.length,
       data: entityObjects.map((entityObject) => ({
-        day: entityObject._id,
+        day: entityObject.day,
         count: entityObject.count,
         revenue: entityObject.revenue,
       })),
@@ -135,12 +135,12 @@ export class OrderDocumentRepository implements OrderRepository {
     const { startDate, endDate, status } = searchQuery;
     const query: Record<string, any> = {};
 
-    query.orderDate = {};
+    query.createdAt = {};
     if (startDate)
-      query.orderDate.$gte =
+      query.createdAt.$gte =
         startDate instanceof Date ? startDate : new Date(startDate);
     if (endDate)
-      query.orderDate.$lte =
+      query.createdAt.$lte =
         endDate instanceof Date ? endDate : new Date(endDate);
     if (status) query.status = status;
 
@@ -148,7 +148,7 @@ export class OrderDocumentRepository implements OrderRepository {
       { $match: query },
       {
         $group: {
-          _id: { $month: '$orderDate' },
+          _id: { $month: '$createdAt' },
           count: { $sum: 1 },
           revenue: { $sum: '$totalAmount' },
         },
@@ -159,7 +159,7 @@ export class OrderDocumentRepository implements OrderRepository {
     return {
       total: entityObjects.length,
       data: entityObjects.map((entityObject) => ({
-        month: entityObject._id,
+        month: entityObject.month,
         count: entityObject.count,
         revenue: entityObject.revenue,
       })),
@@ -172,12 +172,12 @@ export class OrderDocumentRepository implements OrderRepository {
     const { startDate, endDate, status } = searchQuery;
     const query: Record<string, any> = {};
 
-    query.orderDate = {};
+    query.createdAt = {};
     if (startDate)
-      query.orderDate.$gte =
+      query.createdAt.$gte =
         startDate instanceof Date ? startDate : new Date(startDate);
     if (endDate)
-      query.orderDate.$lte =
+      query.createdAt.$lte =
         endDate instanceof Date ? endDate : new Date(endDate);
     if (status) query.status = status;
 
@@ -185,7 +185,7 @@ export class OrderDocumentRepository implements OrderRepository {
       { $match: query },
       {
         $group: {
-          _id: { $year: '$orderDate' },
+          _id: { $year: '$createdAt' },
           count: { $sum: 1 },
           revenue: { $sum: '$totalAmount' },
         },
@@ -196,7 +196,7 @@ export class OrderDocumentRepository implements OrderRepository {
     return {
       total: entityObjects.length,
       data: entityObjects.map((entityObject) => ({
-        year: entityObject._id,
+        year: entityObject.year,
         count: entityObject.count,
         revenue: entityObject.revenue,
       })),
@@ -209,19 +209,20 @@ export class OrderDocumentRepository implements OrderRepository {
     const { startDate, endDate, status } = searchQuery;
     const query: Record<string, any> = {};
 
-    query.orderDate = {};
+    query.createdAt = {};
     if (startDate)
-      query.orderDate.$gte =
+      query.createdAt.$gte =
         startDate instanceof Date ? startDate : new Date(startDate);
     if (endDate)
-      query.orderDate.$lte =
+      query.createdAt.$lte =
         endDate instanceof Date ? endDate : new Date(endDate);
     if (status) query.status = status;
 
-    const entityObjects = await this.orderModel.find(query);
+    const entityObjects = await this.orderModel.countDocuments(query);
 
     return {
-      total: entityObjects.length,
+      total: entityObjects,
+      status: status,
     };
   }
 
@@ -231,12 +232,12 @@ export class OrderDocumentRepository implements OrderRepository {
     const { startDate, endDate, status } = searchQuery;
     const query: Record<string, any> = {};
 
-    query.orderDate = {};
+    query.createdAt = {};
     if (startDate)
-      query.orderDate.$gte =
+      query.createdAt.$gte =
         startDate instanceof Date ? startDate : new Date(startDate);
     if (endDate)
-      query.orderDate.$lte =
+      query.createdAt.$lte =
         endDate instanceof Date ? endDate : new Date(endDate);
     if (status) query.status = status;
     const entityObjects = await this.orderModel.find(query);

@@ -3,7 +3,8 @@ import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { Customer } from '../../domain/customer';
 import { SearchDto } from '../../dto/find-all-customers.dto';
-
+import { EnumerateCountOrderDto } from '../../../satistic/dto/count-order.dto';
+import { TotalResponseDto } from '../../../satistic/dto/satistic.dto';
 export abstract class CustomerRepository {
   abstract create(
     data: Omit<Customer, 'id' | 'createdAt' | 'updatedAt'>,
@@ -18,6 +19,10 @@ export abstract class CustomerRepository {
   abstract findById(id: Customer['id']): Promise<NullableType<Customer>>;
 
   abstract findByIds(ids: Customer['id'][]): Promise<Customer[]>;
+
+  abstract countTotalByQuery(
+    searchQuery: Omit<EnumerateCountOrderDto, 'enumerateBy'>,
+  ): Promise<TotalResponseDto>;
 
   abstract update(
     id: Customer['id'],

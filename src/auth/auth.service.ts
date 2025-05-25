@@ -231,7 +231,6 @@ export class AuthService {
     data: Pick<JwtRefreshPayloadType, 'sessionId' | 'hash'>,
   ): Promise<Omit<LoginResponseDto, 'user'>> {
     const session = await this.sessionService.findById(data.sessionId);
-
     if (!session) {
       throw new UnauthorizedException();
     }

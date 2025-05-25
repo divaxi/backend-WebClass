@@ -49,4 +49,15 @@ export class EnumerateResponseDto<T> {
 export class TotalResponseDto {
   @ApiProperty({ type: Number })
   total: number;
+
+  @ApiProperty({ type: String })
+  status?: string;
+}
+
+export class TotalOrderEachStatusResponseDto {
+  @ApiProperty({ type: Number })
+  total: number;
+
+  @ApiProperty({ type: String })
+  status: string;
 }

@@ -7,7 +7,7 @@ import { OrderHistoryRepository } from '../../order-history.repository';
 import { OrderHistory } from '../../../../domain/order-history';
 import { OrderHistoryMapper } from '../mappers/order-history.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
-
+import { SearchDto } from '../../../../dto/find-all-order-histories.dto';
 @Injectable()
 export class OrderHistoryDocumentRepository implements OrderHistoryRepository {
   constructor(
@@ -25,12 +25,19 @@ export class OrderHistoryDocumentRepository implements OrderHistoryRepository {
   async findAllWithPagination({
     paginationOptions,
   }: {
-    paginationOptions: IPaginationOptions;
+    paginationOptions: IPaginationOptions<SearchDto>;
   }): Promise<OrderHistory[]> {
+    const { page, limit, search } = paginationOptions;
+    const query: Record<string, any> = {};
+
+    if (search?.orderId) {
+      query.order = search.orderId;
+    }
     const entityObjects = await this.orderHistoryModel
-      .find()
-      .skip((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit);
+      .find(query)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 });
 
     return entityObjects.map((entityObject) =>
       OrderHistoryMapper.toDomain(entityObject),

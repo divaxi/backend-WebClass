@@ -3,8 +3,16 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { SatisticService } from './satistic.service';
 import { EnumerateCountOrderDto } from './dto/count-order.dto';
-import { TotalResponseDto } from './dto/satistic.dto';
-import { TotalOrderDto } from './dto/total-order.dto';
+import {
+  DayByDay,
+  EnumerateResponseDto,
+  MonthByMonth,
+  TotalOrderEachStatusResponseDto,
+  TotalResponseDto,
+  YearByYear,
+} from './dto/satistic.dto';
+
+import { TotalOrderDto, TotalOrderEachStatusDto } from './dto/total-order.dto';
 @ApiTags('Satistic')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
@@ -17,7 +25,7 @@ export class SatisticController {
 
   @Get('count-order')
   @ApiOkResponse({
-    type: EnumerateCountOrderDto,
+    type: EnumerateResponseDto<DayByDay | MonthByMonth | YearByYear>,
   })
   countOrderByTime(@Query() query: EnumerateCountOrderDto) {
     return this.satisticService.countOrderByTime(query);
@@ -37,5 +45,21 @@ export class SatisticController {
   })
   totalOrder(@Query() query: TotalOrderDto) {
     return this.satisticService.totalOrder(query);
+  }
+
+  @Get('total-order-each-status')
+  @ApiOkResponse({
+    type: [TotalOrderEachStatusResponseDto],
+  })
+  totalOrderEachStatus(@Query() query: TotalOrderEachStatusDto) {
+    return this.satisticService.totalOrderEachStatus(query);
+  }
+
+  @Get('total-user')
+  @ApiOkResponse({
+    type: TotalResponseDto,
+  })
+  totalCustomer(@Query() query: TotalOrderDto) {
+    return this.satisticService.totalCustomer(query);
   }
 }

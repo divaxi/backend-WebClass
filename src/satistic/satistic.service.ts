@@ -1,9 +1,14 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { OrdersService } from '../orders/orders.service';
 import { EnumerateByEnum, EnumerateCountOrderDto } from './dto/count-order.dto';
+import { OrderStatusEnum } from '../orders/statuses.enum';
+import { CustomersService } from '../customers/customers.service';
 @Injectable()
 export class SatisticService {
-  constructor(private readonly orderService: OrdersService) {}
+  constructor(
+    private readonly orderService: OrdersService,
+    private readonly customerService: CustomersService,
+  ) {}
 
   async countOrderByTime(searchQuery: EnumerateCountOrderDto) {
     switch (searchQuery.enumerateBy) {
@@ -24,5 +29,21 @@ export class SatisticService {
 
   totalOrder(searchQuery: Omit<EnumerateCountOrderDto, 'enumerateBy'>) {
     return this.orderService.countTotalByQuery(searchQuery);
+  }
+
+  totalOrderEachStatus(
+    searchQuery: Omit<EnumerateCountOrderDto, 'enumerateBy' | 'status'>,
+  ) {
+    const status = Object.values(OrderStatusEnum);
+    return status.map((status) => {
+      return this.orderService.countTotalByQuery({
+        ...searchQuery,
+        status: status.toString(),
+      });
+    });
+  }
+
+  totalCustomer(searchQuery: Omit<EnumerateCountOrderDto, 'enumerateBy'>) {
+    return this.customerService.countTotalByQuery(searchQuery);
   }
 }

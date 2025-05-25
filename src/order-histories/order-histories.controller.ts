@@ -55,12 +55,16 @@ export class OrderHistoriesController {
     if (limit > 50) {
       limit = 50;
     }
+    const orderId = query.orderId;
 
     return infinityPagination(
       await this.orderHistoriesService.findAllWithPagination({
         paginationOptions: {
           page,
           limit,
+          search: {
+            orderId,
+          },
         },
       }),
       { page, limit },

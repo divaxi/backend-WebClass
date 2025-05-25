@@ -20,7 +20,6 @@ import { OrderStatusEnum } from './statuses.enum';
 export class OrdersService {
   constructor(
     private readonly customerService: CustomersService,
-
     // Dependencies here
     private readonly orderRepository: OrderRepository,
   ) {}

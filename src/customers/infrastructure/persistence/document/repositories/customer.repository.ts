@@ -8,6 +8,8 @@ import { Customer } from '../../../../domain/customer';
 import { CustomerMapper } from '../mappers/customer.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { SearchDto } from '../../../../dto/find-all-customers.dto';
+import { TotalResponseDto } from '../../../../../satistic/dto/satistic.dto';
+import { EnumerateCountOrderDto } from '../../../../../satistic/dto/count-order.dto';
 
 @Injectable()
 export class CustomerDocumentRepository implements CustomerRepository {
@@ -64,6 +66,24 @@ export class CustomerDocumentRepository implements CustomerRepository {
     return entityObjects.map((entityObject) =>
       CustomerMapper.toDomain(entityObject),
     );
+  }
+
+  async countTotalByQuery(
+    searchQuery: Omit<EnumerateCountOrderDto, 'enumerateBy'>,
+  ): Promise<TotalResponseDto> {
+    const { startDate, endDate } = searchQuery;
+    const query: Record<string, any> = {};
+
+    if (startDate) {
+      query.createdAt = { $gte: startDate };
+    }
+
+    if (endDate) {
+      query.createdAt = { $lte: endDate };
+    }
+
+    const total = await this.customerModel.countDocuments(query);
+    return { total };
   }
 
   async update(

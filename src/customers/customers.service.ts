@@ -8,7 +8,7 @@ import { CustomerRepository } from './infrastructure/persistence/customer.reposi
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Customer } from './domain/customer';
 import { SearchDto } from './dto/find-all-customers.dto';
-
+import { EnumerateCountOrderDto } from '../satistic/dto/count-order.dto';
 @Injectable()
 export class CustomersService {
   constructor(
@@ -55,6 +55,10 @@ export class CustomersService {
 
   findByIds(ids: Customer['id'][]) {
     return this.customerRepository.findByIds(ids);
+  }
+
+  countTotalByQuery(searchQuery: Omit<EnumerateCountOrderDto, 'enumerateBy'>) {
+    return this.customerRepository.countTotalByQuery(searchQuery);
   }
 
   async update(

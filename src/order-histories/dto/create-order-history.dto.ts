@@ -7,6 +7,7 @@ import {
 
   ValidateNested,
   IsNotEmptyObject,
+  IsEnum,
 } from 'class-validator';
 
 import {
@@ -40,11 +41,9 @@ export class CreateOrderHistoryDto {
   order: OrderDto;
 
   @ApiProperty({
-    enum: OrderStatusEnum,
-    enumName: 'OrderStatusEnum',
     required: true,
-    description: 'Trạng thái đơn hàng trong lịch sử thay đổi',
-    example: OrderStatusEnum.NEW_PENDING,
+    enum: OrderStatusEnum,
   })
+  @IsEnum(OrderStatusEnum)
   status: OrderStatusEnum;
 }
