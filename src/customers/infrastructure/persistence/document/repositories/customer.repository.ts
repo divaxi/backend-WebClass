@@ -49,7 +49,8 @@ export class CustomerDocumentRepository implements CustomerRepository {
     const entityObjects = await this.customerModel
       .find(query)
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .sort({ createdAt: -1 });
 
     return entityObjects.map((entityObject) =>
       CustomerMapper.toDomain(entityObject),

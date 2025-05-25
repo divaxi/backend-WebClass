@@ -15,6 +15,7 @@ import {
   YearByYear,
 } from '../../../../../satistic/dto/satistic.dto';
 import { EnumerateResponseDto } from '../../../../../satistic/dto/satistic.dto';
+import { OrderStatusEnum } from '../../../../statuses.enum';
 
 @Injectable()
 export class OrderDocumentRepository implements OrderRepository {
@@ -74,7 +75,9 @@ export class OrderDocumentRepository implements OrderRepository {
       },
     ];
 
-    const entityObjects = await this.orderModel.aggregate(pipeline);
+    const entityObjects = await this.orderModel
+      .aggregate(pipeline)
+      .sort({ createdAt: -1 });
 
     return entityObjects.map((entityObject) =>
       OrderMapper.toDomain(entityObject),
@@ -239,7 +242,11 @@ export class OrderDocumentRepository implements OrderRepository {
     if (endDate)
       query.createdAt.$lte =
         endDate instanceof Date ? endDate : new Date(endDate);
-    if (status) query.status = status;
+    if (status) {
+      query.status = status;
+    } else {
+      query.status = OrderStatusEnum.DELIVERED;
+    }
     const entityObjects = await this.orderModel.find(query);
 
     return {

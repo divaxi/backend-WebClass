@@ -52,7 +52,7 @@ export class OrdersService {
 
       expectedDeliveryDate,
 
-      orderDate: createOrderDto.orderDate,
+      orderDate: new Date(),
 
       deliveryAddress: createOrderDto.deliveryAddress,
 

@@ -7,7 +7,6 @@ import { UsersController } from './users.controller';
 
 import { UsersService } from './users.service';
 import { DocumentUserPersistenceModule } from './infrastructure/persistence/document/document-persistence.module';
-import { FilesModule } from '../files/files.module';
 
 const infrastructurePersistenceModule = DocumentUserPersistenceModule;
 
@@ -15,7 +14,6 @@ const infrastructurePersistenceModule = DocumentUserPersistenceModule;
   imports: [
     // import modules, etc.
     infrastructurePersistenceModule,
-    FilesModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

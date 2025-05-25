@@ -10,8 +10,14 @@ import { MongooseConfigService } from '../../mongoose-config.service';
 
 import { CustomerSeedModule } from './customer/customer-seed.module';
 
+import { OrderSeedModule } from './order/order-seed.module';
+
+import { OrderHistorySeedModule } from './order-history/order-history-seed.module';
+
 @Module({
   imports: [
+    OrderHistorySeedModule,
+    OrderSeedModule,
     CustomerSeedModule,
     UserSeedModule,
     ConfigModule.forRoot({
